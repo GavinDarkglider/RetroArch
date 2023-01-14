@@ -2205,17 +2205,7 @@ MSG_HASH(
    "Use the lowest frequency available to save power. Useful on battery powered devices, but performance will be significantly reduced."
    )
 
-#ifdef HAVE_LAKKA_SWITCH
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_SWITCH_GPU_PROFILE,
-   "GPU Over-clock"
-   )
-MSG_HASH(
-   MENU_ENUM_SUBLABEL_SWITCH_GPU_PROFILE,
-   "Over-clock or under-clock the Switch GPU."
-   )
-#endif
-#if defined(HAVE_LAKKA_SWITCH) || defined(HAVE_LIBNX)
+#ifdef HAVE_LIBNX
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_SWITCH_CPU_PROFILE,
    "CPU Over-clock"
@@ -2226,6 +2216,8 @@ MSG_HASH(
    )
 #endif
 #ifdef HAVE_LAKKA
+#endif
+#ifdef HAVE_LAKKA_SWITCH
 #endif
 #ifdef GEKKO
 MSG_HASH(

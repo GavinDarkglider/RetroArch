@@ -13328,18 +13328,7 @@ MSG_HASH(
    MENU_ENUM_SUBLABEL_BRIGHTNESS_CONTROL,
    "A kijelző fényerejének növelése vagy csökkentése."
    )
-
-#ifdef HAVE_LAKKA_SWITCH
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_SWITCH_GPU_PROFILE,
-   "GPU túlhajtás"
-   )
-MSG_HASH(
-   MENU_ENUM_SUBLABEL_SWITCH_GPU_PROFILE,
-   "A Switch GPU-jának túlhajtása vagy visszafogása."
-   )
-#endif
-#if defined(HAVE_LAKKA_SWITCH) || defined(HAVE_LIBNX)
+#ifdef HAVE_LIBNX
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_SWITCH_CPU_PROFILE,
    "CPU túlhajtás"
@@ -13422,6 +13411,8 @@ MSG_HASH(
    MSG_LOCALAP_ERROR_CONFIG_PARSE,
    "Rossz konfigurációs fájl - nincs APNAME vagy PASSWORD itt: %s"
    )
+#endif
+#ifdef HAVE_LAKKA_SWITCH
 #endif
 #ifdef GEKKO
 MSG_HASH(

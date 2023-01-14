@@ -50,7 +50,7 @@
 #include "../core_updater_list.h"
 #endif
 
-#ifdef HAVE_LAKKA_SWITCH
+#ifdef HAVE_LAKKA
 #include "../../lakka.h"
 #endif
 
@@ -58,7 +58,7 @@
 #include <switch.h>
 #endif
 
-#if defined(HAVE_LAKKA) || defined(HAVE_LIBNX)
+#if /*defined(HAVE_LAKKA) ||*/ defined(HAVE_LIBNX)
 #include "../../switch_performance_profiles.h"
 #endif
 
@@ -11593,7 +11593,6 @@ bool menu_displaylist_ctl(enum menu_displaylist_ctl_state type,
          /* No-op */
          break;
 #endif
-#ifndef HAVE_LAKKA_SWITCH
 #ifdef HAVE_LAKKA
       case DISPLAYLIST_CPU_POLICY_LIST:
          menu_entries_ctl(MENU_ENTRIES_CTL_CLEAR, info->list);
@@ -11695,30 +11694,17 @@ bool menu_displaylist_ctl(enum menu_displaylist_ctl_state type,
          break;
       }
 #endif
-#endif
-#if defined(HAVE_LAKKA_SWITCH) || defined(HAVE_LIBNX)
+#if defined(HAVE_LIBNX)
       case DISPLAYLIST_SWITCH_CPU_PROFILE:
       {
          unsigned i;
          char text[PATH_MAX_LENGTH];
-#ifdef HAVE_LAKKA_SWITCH
-         char current_profile[PATH_MAX_LENGTH];
-         FILE               *profile = NULL;
-#endif
          const size_t profiles_count = sizeof(SWITCH_CPU_PROFILES)/sizeof(SWITCH_CPU_PROFILES[1]);
 
          runloop_msg_queue_push("Warning : extended overclocking can damage the Switch", 1, 90, true, NULL, MESSAGE_QUEUE_ICON_DEFAULT, MESSAGE_QUEUE_CATEGORY_INFO);
 
          menu_entries_ctl(MENU_ENTRIES_CTL_CLEAR, info->list);
 
-#ifdef HAVE_LAKKA_SWITCH
-         profile = popen("cpu-profile get", "r");
-         fgets(current_profile, PATH_MAX_LENGTH, profile);
-         pclose(profile);
-
-         snprintf(text, sizeof(text),
-               "Current profile: %s", current_profile);
-#else
          u32 currentClock = 0;
          if (hosversionBefore(8, 0, 0))
             pcvGetClockRate(PcvModule_CpuBus, &currentClock);
@@ -11730,7 +11716,6 @@ bool menu_displaylist_ctl(enum menu_displaylist_ctl_state type,
             clkrstCloseSession(&session);
          }
          snprintf(text, sizeof(text), "Current Clock : %i", currentClock);
-#endif
          if (menu_entries_append(info->list,
             text,
             "",
@@ -11760,49 +11745,7 @@ bool menu_displaylist_ctl(enum menu_displaylist_ctl_state type,
                             | MD_FLAG_NEED_CLEAR;
          break;
       }
-#if defined(HAVE_LAKKA_SWITCH)
-      case DISPLAYLIST_SWITCH_GPU_PROFILE:
-      {
-         unsigned i;
-         char text[PATH_MAX_LENGTH];
-         char current_profile[PATH_MAX_LENGTH];
-         FILE               *profile = NULL;
-         const size_t profiles_count = sizeof(SWITCH_GPU_PROFILES)/sizeof(SWITCH_GPU_PROFILES[1]);
-
-         runloop_msg_queue_push("Warning : extended overclocking can damage the Switch", 1, 90, true, NULL, MESSAGE_QUEUE_ICON_DEFAULT, MESSAGE_QUEUE_CATEGORY_INFO);
-
-         profile = popen("gpu-profile get", "r");
-         fgets(current_profile, PATH_MAX_LENGTH, profile);
-         pclose(profile);
-
-         menu_entries_ctl(MENU_ENTRIES_CTL_CLEAR, info->list);
-
-         /* TODO/FIXME - Localize */
-         snprintf(text, sizeof(text),
-               "Current profile : %s", current_profile);
-
-         if (menu_entries_append(info->list, text, "", 0, MENU_INFO_MESSAGE, 0, 0, NULL))
-            count++;
-
-         for (i = 0; i < profiles_count; i++)
-         {
-            char title[PATH_MAX_LENGTH];
-            char* profile               = SWITCH_GPU_PROFILES[i];
-            char* speed                 = SWITCH_GPU_SPEEDS[i];
-
-            snprintf(title, sizeof(title), "%s (%s)", profile, speed);
-
-            if (menu_entries_append(info->list, title, "", 0, MENU_SET_SWITCH_GPU_PROFILE, 0, i, NULL))
-               count++;
-         }
-
-         info->flags       |= MD_FLAG_NEED_REFRESH
-                            | MD_FLAG_NEED_PUSH
-                            | MD_FLAG_NEED_CLEAR;
-         break;
-      }
-#endif /* HAVE_LAKKA_SWITCH */
-#endif /* HAVE_LAKKA_SWITCH || HAVE_LIBNX */
+#endif /* HAVE_LIBNX */
       case DISPLAYLIST_MUSIC_LIST:
          {
             menu_entries_ctl(MENU_ENTRIES_CTL_CLEAR, info->list);

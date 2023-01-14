@@ -6180,10 +6180,7 @@ MSG_HASH(
    MENU_ENUM_LABEL_VALUE_INPUT_SMALL_KEYBOARD_ENABLE,
    "Small Keyboard Enable"
    )
-
-#ifdef HAVE_LAKKA_SWITCH
-#endif
-#if defined(HAVE_LAKKA_SWITCH) || defined(HAVE_LIBNX)
+#ifdef HAVE_LIBNX
 #endif
 #ifdef HAVE_LAKKA
 MSG_HASH(
@@ -6206,6 +6203,8 @@ MSG_HASH(
    MENU_ENUM_SUBLABEL_SSH_ENABLE,
    "Enable or disable remote command line access."
    )
+#endif
+#ifdef HAVE_LAKKA_SWITCH
 #endif
 #ifdef GEKKO
 #endif

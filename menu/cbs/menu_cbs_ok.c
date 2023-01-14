@@ -100,7 +100,7 @@
 #include "../../play_feature_delivery/play_feature_delivery.h"
 #endif
 
-#if defined(HAVE_LAKKA) || defined(HAVE_LIBNX)
+#if defined(HAVE_LIBNX)
 #include "../../switch_performance_profiles.h"
 #endif
 
@@ -3851,19 +3851,11 @@ static int action_ok_deferred_list_stub(const char *path,
    return 0;
 }
 
-#if defined(HAVE_LAKKA_SWITCH) || defined(HAVE_LIBNX)
+#if defined(HAVE_LIBNX)
 static int action_ok_set_switch_cpu_profile(const char *path,
       const char *label, unsigned type, size_t idx, size_t entry_idx)
 {
    char command[PATH_MAX_LENGTH] = {0};
-#ifdef HAVE_LAKKA_SWITCH
-   char* profile_name            = SWITCH_CPU_PROFILES[entry_idx];
-
-   snprintf(command, sizeof(command), "cpu-profile set '%s'", profile_name);
-
-   system(command);
-   snprintf(command, sizeof(command), "Current profile set to %s", profile_name);
-#else
    unsigned profile_clock          = SWITCH_CPU_SPEEDS_VALUES[entry_idx];
    settings_t *settings            = config_get_ptr();
 
@@ -3880,7 +3872,6 @@ static int action_ok_set_switch_cpu_profile(const char *path,
    }
    snprintf(command, sizeof(command),
          "Current Clock set to %i", profile_clock);
-#endif
 
    runloop_msg_queue_push(command, 1, 90, true, NULL,
          MESSAGE_QUEUE_ICON_DEFAULT, MESSAGE_QUEUE_CATEGORY_INFO);
@@ -3889,33 +3880,6 @@ static int action_ok_set_switch_cpu_profile(const char *path,
 }
 #endif
 
-#ifdef HAVE_LAKKA_SWITCH
-
-static int action_ok_set_switch_gpu_profile(const char *path,
-      const char *label, unsigned type, size_t idx, size_t entry_idx)
-{
-   char command[PATH_MAX_LENGTH];
-   char            *profile_name  = SWITCH_GPU_PROFILES[entry_idx];
-
-   command[0]                     = '\0';
-
-   snprintf(command, sizeof(command),
-         "gpu-profile set '%s'",
-         profile_name);
-
-   system(command);
-
-   snprintf(command, sizeof(command),
-         "Current profile set to %s",
-         profile_name);
-
-   runloop_msg_queue_push(command, 1, 90, true, NULL,
-         MESSAGE_QUEUE_ICON_DEFAULT, MESSAGE_QUEUE_CATEGORY_INFO);
-
-   return -1;
-}
-
-#endif
 
 static int action_ok_load_core_deferred(const char *path,
       const char *label, unsigned type, size_t idx, size_t entry_idx)
@@ -8186,10 +8150,8 @@ static int menu_cbs_init_bind_ok_compare_label(menu_file_list_cbs_t *cbs,
 #ifdef HAVE_VIDEO_LAYOUT
          {MENU_ENUM_LABEL_ONSCREEN_VIDEO_LAYOUT_SETTINGS,      action_ok_onscreen_video_layout_list},
 #endif
-#ifdef HAVE_LAKKA_SWITCH
-         {MENU_ENUM_LABEL_SWITCH_GPU_PROFILE,                  action_ok_push_default},
-#endif
-#if defined(HAVE_LAKKA_SWITCH) || defined(HAVE_LIBNX)
+
+#if defined(HAVE_LIBNX)
          {MENU_ENUM_LABEL_SWITCH_CPU_PROFILE,                  action_ok_push_default},
 #endif
          {MENU_ENUM_LABEL_MENU_WALLPAPER,                      action_ok_menu_wallpaper},
@@ -8707,12 +8669,7 @@ static int menu_cbs_init_bind_ok_compare_type(menu_file_list_cbs_t *cbs,
          case FILE_TYPE_PLAYLIST_ENTRY:
             BIND_ACTION_OK(cbs, action_ok_playlist_entry_collection);
             break;
-#ifdef HAVE_LAKKA_SWITCH
-         case MENU_SET_SWITCH_GPU_PROFILE:
-            BIND_ACTION_OK(cbs, action_ok_set_switch_gpu_profile);
-            break;
-#endif
-#if defined(HAVE_LAKKA_SWITCH) || defined(HAVE_LIBNX)
+#if defined(HAVE_LIBNX)
          case MENU_SET_SWITCH_CPU_PROFILE:
             BIND_ACTION_OK(cbs, action_ok_set_switch_cpu_profile);
             break;
