@@ -8074,7 +8074,8 @@ static void general_write_handler(rarch_setting_t *setting)
             }
          }
          break;
-      case MENU_ENUM_LABEL_INPUT_POLL_TYPE_BEHAVIOR:
+
+     case MENU_ENUM_LABEL_INPUT_POLL_TYPE_BEHAVIOR:
          core_set_poll_type(*setting->value.target.integer);
          break;
       case MENU_ENUM_LABEL_VIDEO_SCALE_INTEGER:
@@ -9994,7 +9995,7 @@ static bool setting_append_list(
          MENU_SETTINGS_LIST_CURRENT_ADD_CMD(list, list_info, CMD_EVENT_QUIT);
 #endif
 
-#if defined(HAVE_LAKKA_SWITCH) || defined(HAVE_LIBNX)
+#ifdef HAVE_LIBNX
         CONFIG_ACTION(
               list, list_info,
               MENU_ENUM_LABEL_SWITCH_CPU_PROFILE,
@@ -10005,15 +10006,6 @@ static bool setting_append_list(
 #endif
 
 #if defined(HAVE_LAKKA)
-#ifdef HAVE_LAKKA_SWITCH
-        CONFIG_ACTION(
-               list, list_info,
-               MENU_ENUM_LABEL_SWITCH_GPU_PROFILE,
-               MENU_ENUM_LABEL_VALUE_SWITCH_GPU_PROFILE,
-               &group_info,
-               &subgroup_info,
-               parent_group);
-#endif
          CONFIG_ACTION(
                list, list_info,
                MENU_ENUM_LABEL_REBOOT,
@@ -18578,7 +18570,6 @@ static bool setting_append_list(
 #endif
 
 #ifdef HAVE_LAKKA
-#ifndef HAVE_LAKKA_SWITCH
          CONFIG_ACTION(
                list, list_info,
                MENU_ENUM_LABEL_CPU_PERFPOWER,
@@ -18587,8 +18578,6 @@ static bool setting_append_list(
                &subgroup_info,
                parent_group);
 #endif
-#endif
-
          if (frontend_driver_has_gamemode())
             CONFIG_BOOL(
                   list, list_info,

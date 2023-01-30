@@ -5688,18 +5688,7 @@ MSG_HASH(
    MSG_LOCAL,
    "Miestne"
    )
-
-#ifdef HAVE_LAKKA_SWITCH
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_SWITCH_GPU_PROFILE,
-   "GPU pretaktovanie"
-   )
-MSG_HASH(
-   MENU_ENUM_SUBLABEL_SWITCH_GPU_PROFILE,
-   "Pretaktovanie alebo podtaktovanie GPU Switcha."
-   )
-#endif
-#if defined(HAVE_LAKKA_SWITCH) || defined(HAVE_LIBNX)
+#ifdef HAVE_LIBNX
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_SWITCH_CPU_PROFILE,
    "CPU pretaktovanie"
@@ -5726,6 +5715,8 @@ MSG_HASH(
    MSG_WIFI_EMPTY_SSID,
    "[Žiadne SSID]"
    )
+#endif
+#ifdef HAVE_LAKKA_SWITCH
 #endif
 #ifdef GEKKO
 MSG_HASH(

@@ -90,9 +90,6 @@
 
 #ifdef HAVE_LIBNX
 #include <switch.h>
-#endif
-
-#if defined(HAVE_LAKKA) || defined(HAVE_LIBNX)
 #include "switch_performance_profiles.h"
 #endif
 
@@ -960,11 +957,9 @@ void drivers_init(
    if (flags & DRIVER_MIDI_MASK)
       midi_driver_init(settings);
 
-#ifndef HAVE_LAKKA_SWITCH
 #ifdef HAVE_LAKKA
    cpu_scaling_driver_init();
 #endif
-#endif /* #ifndef HAVE_LAKKA_SWITCH */
 }
 
 void driver_uninit(int flags)
@@ -1058,11 +1053,9 @@ void driver_uninit(int flags)
    if (flags & DRIVER_MIDI_MASK)
       midi_driver_free();
 
-#ifndef HAVE_LAKKA_SWITCH
 #ifdef HAVE_LAKKA
    cpu_scaling_driver_free();
 #endif
-#endif /* #ifndef HAVE_LAKKA_SWITCH */
 }
 
 static void retroarch_deinit_drivers(struct retro_callbacks *cbs)
