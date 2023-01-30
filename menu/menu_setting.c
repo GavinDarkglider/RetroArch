@@ -21,7 +21,6 @@
 #else
 #include <unistd.h>
 #endif
-
 #include <libretro.h>
 #include <lists/file_list.h>
 #include <file/file_path.h>
@@ -98,6 +97,9 @@
 #include "../performance_counters.h"
 #include "../setting_list.h"
 #include "../lakka.h"
+#ifdef HAVE_LAKKA_SWITCH
+#include "../lakka-switch.h"
+#endif 
 #include "../retroarch.h"
 #include "../gfx/video_display_server.h"
 #ifdef HAVE_CHEATS
@@ -311,6 +313,9 @@ enum settings_list_type
    SETTINGS_LIST_CORE_UPDATER,
    SETTINGS_LIST_NETPLAY,
    SETTINGS_LIST_LAKKA_SERVICES,
+#ifdef HAVE_LAKKA_SWITCH
+   SETTINGS_LIST_LAKKA_SWITCH_OPTIONS,
+#endif
    SETTINGS_LIST_USER,
    SETTINGS_LIST_USER_ACCOUNTS,
    SETTINGS_LIST_USER_ACCOUNTS_CHEEVOS,
@@ -9067,6 +9072,19 @@ static void systemd_service_toggle(const char *path, char *unit, bool enable)
    }
 }
 
+#ifdef HAVE_LAKKA_SWITCH
+static void switch_oc_enable_toggle_change_handler(rarch_setting_t *setting)
+{
+   FILE* f = fopen(SWITCH_OC_TOGGLE_PATH, "w");
+    if (*setting->value.target.boolean == true) {
+	  fprintf(f, "1\n");
+	} else {
+	  fprintf(f, "0\n");	
+    }
+    fclose(f);
+}
+#endif
+
 static void ssh_enable_toggle_change_handler(rarch_setting_t *setting)
 {
    systemd_service_toggle(LAKKA_SSH_PATH, (char*)"sshd.service",
@@ -10407,7 +10425,15 @@ static bool setting_append_list(
                &subgroup_info,
                parent_group);
 #endif
-
+#ifdef HAVE_LAKKA_SWITCH
+         CONFIG_ACTION(
+               list, list_info,
+               MENU_ENUM_LABEL_LAKKA_SWITCH_OPTIONS,
+               MENU_ENUM_LABEL_VALUE_LAKKA_SWITCH_OPTIONS,
+               &group_info,
+               &subgroup_info,
+               parent_group);
+#endif
          CONFIG_ACTION(
                list, list_info,
                MENU_ENUM_LABEL_PLAYLIST_SETTINGS,
@@ -21277,7 +21303,6 @@ static bool setting_append_list(
             START_SUB_GROUP(list, list_info,
                   msg_hash_to_str(MENU_ENUM_LABEL_VALUE_LAKKA_SERVICES),
                   &group_info, &subgroup_info, parent_group);
-
             CONFIG_BOOL(
                   list, list_info,
                   &settings->bools.ssh_enable,
@@ -21366,6 +21391,40 @@ static bool setting_append_list(
 #endif
          }
          break;
+#ifdef HAVE_LAKKA_SWITCH
+      case SETTINGS_LIST_LAKKA_SWITCH_OPTIONS:
+         {
+            START_GROUP(list, list_info, &group_info,
+                  msg_hash_to_str(MENU_ENUM_LABEL_VALUE_LAKKA_SWITCH_OPTIONS),
+                  parent_group);
+
+            parent_group = msg_hash_to_str(MENU_ENUM_LABEL_SETTINGS);
+
+            START_SUB_GROUP(list, list_info,
+                  msg_hash_to_str(MENU_ENUM_LABEL_VALUE_LAKKA_SWITCH_OPTIONS),
+                  &group_info, &subgroup_info, parent_group);
+
+            CONFIG_BOOL(
+                  list, list_info,
+                  &settings->bools.switch_oc,
+                  MENU_ENUM_LABEL_SWITCH_OC_ENABLE,
+                  MENU_ENUM_LABEL_VALUE_SWITCH_OC_ENABLE,
+                  true,
+                  MENU_ENUM_LABEL_VALUE_OFF,
+                  MENU_ENUM_LABEL_VALUE_ON,
+                  &group_info,
+                  &subgroup_info,
+                  parent_group,
+                  general_write_handler,
+                  general_read_handler,
+                  SD_FLAG_NONE);
+            (*list)[list_info->index - 1].change_handler = switch_oc_enable_toggle_change_handler;
+
+            END_SUB_GROUP(list, list_info, parent_group);
+            END_GROUP(list, list_info, parent_group);
+         }
+         break;
+#endif
       case SETTINGS_LIST_USER:
          START_GROUP(list, list_info, &group_info,
                msg_hash_to_str(MENU_ENUM_LABEL_VALUE_USER_SETTINGS),
@@ -22578,6 +22637,9 @@ static rarch_setting_t *menu_setting_new_internal(rarch_setting_info_t *list_inf
       SETTINGS_LIST_CORE_UPDATER,
       SETTINGS_LIST_NETPLAY,
       SETTINGS_LIST_LAKKA_SERVICES,
+#ifdef HAVE_LAKKA_SWITCH
+      SETTINGS_LIST_LAKKA_SWITCH_OPTIONS,
+#endif
       SETTINGS_LIST_USER,
       SETTINGS_LIST_USER_ACCOUNTS,
       SETTINGS_LIST_USER_ACCOUNTS_CHEEVOS,

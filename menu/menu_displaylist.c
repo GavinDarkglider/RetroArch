@@ -9100,6 +9100,23 @@ unsigned menu_displaylist_build_list(
          }
          break;
 #endif
+#ifdef HAVE_LAKKA_SWITCH
+      case DISPLAYLIST_LAKKA_SWITCH_OPTIONS_LIST:
+         {
+            menu_displaylist_build_info_t build_list[] = {
+               {MENU_ENUM_LABEL_SWITCH_OC_ENABLE,                                            PARSE_ONLY_BOOL},
+            };
+
+            for (i = 0; i < ARRAY_SIZE(build_list); i++)
+            {
+               if (MENU_DISPLAYLIST_PARSE_SETTINGS_ENUM(list,
+                        build_list[i].enum_idx,  build_list[i].parse_type,
+                        false) == 0)
+                  count++;
+            }
+         }
+         break;
+#endif
       case DISPLAYLIST_MENU_VIEWS_SETTINGS_LIST:
          {
             menu_displaylist_build_info_selective_t build_list[] = {
@@ -9854,6 +9871,9 @@ unsigned menu_displaylist_build_list(
                {MENU_ENUM_LABEL_NETPLAY_LAN_SCAN_SETTINGS,   PARSE_ACTION, true},
 #endif
                {MENU_ENUM_LABEL_LAKKA_SERVICES,              PARSE_ACTION, true},
+#ifdef HAVE_LAKKA_SWITCH
+               {MENU_ENUM_LABEL_LAKKA_SWITCH_OPTIONS,        PARSE_ACTION, true},
+#endif
                {MENU_ENUM_LABEL_PLAYLIST_SETTINGS,           PARSE_ACTION, true},
                {MENU_ENUM_LABEL_USER_SETTINGS,               PARSE_ACTION, true},
                {MENU_ENUM_LABEL_DIRECTORY_SETTINGS,          PARSE_ACTION, true},
@@ -13258,6 +13278,9 @@ bool menu_displaylist_ctl(enum menu_displaylist_ctl_state type,
       case DISPLAYLIST_MENU_FILE_BROWSER_SETTINGS_LIST:
       case DISPLAYLIST_MENU_VIEWS_SETTINGS_LIST:
       case DISPLAYLIST_LAKKA_SERVICES_LIST:
+#ifdef HAVE_LAKKA_SWITCH
+      case DISPLAYLIST_LAKKA_SWITCH_OPTIONS_LIST:
+#endif
       case DISPLAYLIST_MIDI_SETTINGS_LIST:
       case DISPLAYLIST_CRT_SWITCHRES_SETTINGS_LIST:
       case DISPLAYLIST_VIDEO_FULLSCREEN_MODE_SETTINGS_LIST:

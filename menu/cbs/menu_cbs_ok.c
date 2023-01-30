@@ -447,6 +447,10 @@ static enum msg_hash_enums action_ok_dl_to_enum(unsigned lbl)
          return MENU_ENUM_LABEL_DEFERRED_NETPLAY_LAN_SCAN_SETTINGS_LIST;
       case ACTION_OK_DL_LAKKA_SERVICES_LIST:
          return MENU_ENUM_LABEL_DEFERRED_LAKKA_SERVICES_LIST;
+#ifdef HAVE_LAKKA_SWITCH
+      case ACTION_OK_DL_LAKKA_SWITCH_OPTIONS_LIST:
+         return MENU_ENUM_LABEL_DEFERRED_LAKKA_SWITCH_OPTIONS_LIST;
+#endif
       case ACTION_OK_DL_USER_SETTINGS_LIST:
          return MENU_ENUM_LABEL_DEFERRED_USER_SETTINGS_LIST;
       case ACTION_OK_DL_DIRECTORY_SETTINGS_LIST:
@@ -1662,6 +1666,9 @@ int generic_action_ok_displaylist_push(const char *path,
       case ACTION_OK_DL_NETPLAY:
       case ACTION_OK_DL_NETPLAY_LAN_SCAN_SETTINGS_LIST:
       case ACTION_OK_DL_LAKKA_SERVICES_LIST:
+#ifdef HAVE_LAKKA_SWITCH
+      case ACTION_OK_DL_LAKKA_SWITCH_OPTIONS_LIST:
+#endif
       case ACTION_OK_DL_USER_SETTINGS_LIST:
       case ACTION_OK_DL_DIRECTORY_SETTINGS_LIST:
       case ACTION_OK_DL_PRIVACY_SETTINGS_LIST:
@@ -5888,6 +5895,9 @@ DEFAULT_ACTION_OK_FUNC(action_ok_cheevos_appearance_list, ACTION_OK_DL_CHEEVOS_A
 DEFAULT_ACTION_OK_FUNC(action_ok_cheevos_visibility_list, ACTION_OK_DL_CHEEVOS_VISIBILITY_SETTINGS_LIST)
 DEFAULT_ACTION_OK_FUNC(action_ok_updater_list, ACTION_OK_DL_UPDATER_SETTINGS_LIST)
 DEFAULT_ACTION_OK_FUNC(action_ok_lakka_services, ACTION_OK_DL_LAKKA_SERVICES_LIST)
+#ifdef HAVE_LAKKA_SWITCH
+DEFAULT_ACTION_OK_FUNC(action_ok_lakka_switch_options, ACTION_OK_DL_LAKKA_SWITCH_OPTIONS_LIST)
+#endif
 DEFAULT_ACTION_OK_FUNC(action_ok_user_list, ACTION_OK_DL_USER_SETTINGS_LIST)
 DEFAULT_ACTION_OK_FUNC(action_ok_netplay_sublist, ACTION_OK_DL_NETPLAY)
 DEFAULT_ACTION_OK_FUNC(action_ok_directory_list, ACTION_OK_DL_DIRECTORY_SETTINGS_LIST)
@@ -8485,6 +8495,9 @@ static int menu_cbs_init_bind_ok_compare_label(menu_file_list_cbs_t *cbs,
          {MENU_ENUM_LABEL_SUBSYSTEM_SETTINGS,                  action_ok_subsystem_list},
          {MENU_ENUM_LABEL_NETWORK_SETTINGS,                    action_ok_network_list},
          {MENU_ENUM_LABEL_LAKKA_SERVICES,                      action_ok_lakka_services},
+#ifdef HAVE_LAKKA_SWITCH
+         {MENU_ENUM_LABEL_LAKKA_SWITCH_OPTIONS,                action_ok_lakka_switch_options},
+#endif
          {MENU_ENUM_LABEL_NETPLAY_SETTINGS,                    action_ok_netplay_sublist},
          {MENU_ENUM_LABEL_USER_SETTINGS,                       action_ok_user_list},
          {MENU_ENUM_LABEL_DIRECTORY_SETTINGS,                  action_ok_directory_list},
