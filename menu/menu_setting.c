@@ -21409,7 +21409,7 @@ static bool setting_append_list(
                   &settings->bools.switch_oc,
                   MENU_ENUM_LABEL_SWITCH_OC_ENABLE,
                   MENU_ENUM_LABEL_VALUE_SWITCH_OC_ENABLE,
-                  true,
+                  DEFAULT_SWITCH_OC,
                   MENU_ENUM_LABEL_VALUE_OFF,
                   MENU_ENUM_LABEL_VALUE_ON,
                   &group_info,

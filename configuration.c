@@ -61,7 +61,11 @@
 
 #include "lakka.h"
 
-#if defined(HAVE_LAKKA) || defined(HAVE_LIBNX)
+#ifdef HAVE_LAKKA_SWITCH
+#include "lakka-switch.h"
+#endif
+
+#ifdef HAVE_LIBNX
 #include "switch_performance_profiles.h"
 #endif
 
@@ -2069,8 +2073,12 @@ static struct config_bool_setting *populate_settings_bool(
    SETTING_BOOL("ai_service_enable",     &settings->bools.ai_service_enable, true, DEFAULT_AI_SERVICE_ENABLE, false);
    SETTING_BOOL("ai_service_pause",      &settings->bools.ai_service_pause, true, DEFAULT_AI_SERVICE_PAUSE, false);
    SETTING_BOOL("wifi_enabled",          &settings->bools.wifi_enabled, true, DEFAULT_WIFI_ENABLE, false);
+#ifndef HAVE_LAKKA
    SETTING_BOOL("gamemode_enable",       &settings->bools.gamemode_enable, true, DEFAULT_GAMEMODE_ENABLE, false);
-
+#endif
+#ifdef HAVE_LAKKA_SWITCH
+   SETTING_BOOL("switch_oc",       &settings->bools.switch_oc, true, DEFAULT_SWITCH_OC, false);
+#endif
 #ifdef ANDROID
    SETTING_BOOL("android_input_disconnect_workaround",   &settings->bools.android_input_disconnect_workaround, true, false, false);
 #endif
@@ -2703,7 +2711,6 @@ void config_set_defaults(void *data)
    configuration_set_bool(settings, settings->bools.localap_enable, false);
    load_timezone(settings->arrays.timezone);
 #endif
-
 #ifdef HAVE_MENU
    if (first_initialized)
       configuration_set_bool(settings,
@@ -3832,7 +3839,6 @@ static bool config_load_file(global_t *global,
    configuration_set_bool(settings,
          settings->bools.bluetooth_enable, filestream_exists(LAKKA_BLUETOOTH_PATH));
 #endif
-
    if (!retroarch_override_setting_is_set(RARCH_OVERRIDE_SETTING_SAVE_PATH, NULL) &&
          config_get_path(conf, "savefile_directory", tmp_str, sizeof(tmp_str)))
    {
@@ -3887,7 +3893,15 @@ static bool config_load_file(global_t *global,
    extern void libnx_apply_overclock();
    libnx_apply_overclock();
 #endif
-
+#ifdef HAVE_LAKKA_SWITCH
+    FILE* f = fopen(SWITCH_OC_TOGGLE_PATH, "w");
+    if (settings->bools.switch_oc == true) {
+	  fprintf(f, "1\n");
+	} else {
+	  fprintf(f, "0\n");	
+    }
+    fclose(f);
+#endif    
    frontend_driver_set_sustained_performance_mode(settings->bools.sustained_performance_mode);
    recording_driver_update_streaming_url();
 
