@@ -122,8 +122,10 @@
 #include "../manual_content_scan.h"
 #include "../core_backup.h"
 #include "../misc/cpufreq/cpufreq.h"
+#ifdef HAVE_LAKKA_SWITCH
+#include "../misc/gpufreq/gpufreq.h"
+#endif
 #include "../input/input_remapping.h"
-
 #ifdef HAVE_MIST
 #include "../steam/steam.h"
 #endif
@@ -9989,7 +9991,10 @@ unsigned menu_displaylist_build_list(
             menu_displaylist_build_info_t build_list[] = {
                {MENU_ENUM_LABEL_SUSTAINED_PERFORMANCE_MODE, PARSE_ONLY_BOOL},
                {MENU_ENUM_LABEL_CPU_PERFPOWER,              PARSE_ACTION},
-#ifdef HAVE_LAKKA
+#ifdef HAVE_LAKKA_SWITCH
+               {MENU_ENUM_LABEL_GPU_PERFPOWER,              PARSE_ACTION},
+#endif
+#ifndef HAVE_LAKKA
                {MENU_ENUM_LABEL_GAMEMODE_ENABLE,            PARSE_ONLY_BOOL},
 #endif /*HAVE_LAKKA*/
             };
@@ -11809,6 +11814,107 @@ bool menu_displaylist_ctl(enum menu_displaylist_ctl_state type,
                case CPUSCALING_MAX_PERFORMANCE:
                case CPUSCALING_MIN_POWER:
                case CPUSCALING_BALANCED:
+                  /* No settings for these modes */
+                  break;
+            };
+         }
+
+         info->flags       |= MD_FLAG_NEED_REFRESH
+                            | MD_FLAG_NEED_PUSH
+                            | MD_FLAG_NEED_CLEAR;
+         break;
+      }
+#endif
+#ifdef HAVE_LAKKA_SWITCH
+      case DISPLAYLIST_GPU_POLICY_LIST:
+         menu_entries_ctl(MENU_ENTRIES_CTL_CLEAR, info->list);
+
+         menu_entries_append(info->list,
+            info->path,
+            info->path,
+            MENU_ENUM_LABEL_GPU_POLICY_MIN_FREQ,
+            MENU_SETTINGS_GPU_POLICY_SET_MINFREQ, 0, 0, NULL);
+
+         menu_entries_append(info->list,
+            info->path,
+            info->path,
+            MENU_ENUM_LABEL_GPU_POLICY_MAX_FREQ,
+            MENU_SETTINGS_GPU_POLICY_SET_MAXFREQ, 0, 0, NULL);
+
+         menu_entries_append(info->list,
+            info->path,
+            info->path,
+            MENU_ENUM_LABEL_GPU_POLICY_GOVERNOR,
+            MENU_SETTINGS_GPU_POLICY_SET_GOVERNOR, 0, 0, NULL);
+
+         info->flags       |= MD_FLAG_NEED_REFRESH
+                            | MD_FLAG_NEED_PUSH
+                            | MD_FLAG_NEED_CLEAR;
+         break;
+      case DISPLAYLIST_GPU_PERFPOWER_LIST:
+      {
+         cpu_scaling_driver_t **drivers = get_gpu_scaling_drivers(true);
+         menu_entries_ctl(MENU_ENTRIES_CTL_CLEAR, info->list);
+         if (drivers)
+         {
+            int count = 0;
+
+            menu_entries_append(info->list,
+               msg_hash_to_str(MENU_ENUM_LABEL_VALUE_GPU_PERF_MODE),
+               msg_hash_to_str(MENU_ENUM_LABEL_GPU_PERF_MODE),
+               MENU_ENUM_LABEL_GPU_PERF_MODE,
+               0, 0, 0, NULL);
+
+            switch (get_gpu_scaling_mode(NULL))
+            {
+               case GPUSCALING_MANUAL:
+                  while (*drivers)
+                  {
+                     char policyid[16];
+                     snprintf(policyid, sizeof(policyid), "%u", count++);
+                     menu_entries_append(info->list,
+                           policyid,
+                           policyid,
+                           MENU_ENUM_LABEL_GPU_POLICY_ENTRY,
+                           0, 0, 0, NULL);
+                     drivers++;
+                  }
+                  break;
+               case GPUSCALING_MANAGED_PER_CONTEXT:
+                  /* Allows user to pick two governors */
+                  menu_entries_append(info->list,
+                        msg_hash_to_str(MENU_ENUM_LABEL_VALUE_GPU_POLICY_CORE_GOVERNOR),
+                        "0",
+                        MENU_ENUM_LABEL_GPU_POLICY_CORE_GOVERNOR,
+                        0, 0, 0, NULL);
+
+                  menu_entries_append(info->list,
+                        msg_hash_to_str(MENU_ENUM_LABEL_VALUE_GPU_POLICY_MENU_GOVERNOR),
+                        "1",
+                        MENU_ENUM_LABEL_GPU_POLICY_MENU_GOVERNOR,
+                        0, 0, 0, NULL);
+
+                  /* fallthrough */
+               case CPUSCALING_MANAGED_PERFORMANCE:
+                  /* Allow users to choose max/min frequencies */
+                  menu_entries_append(info->list,
+                        "0",
+                        "0",
+                        MENU_ENUM_LABEL_GPU_MANAGED_MIN_FREQ,
+                        MENU_SETTINGS_GPU_MANAGED_SET_MINFREQ,
+                        0, 0, NULL);
+
+                  menu_entries_append(info->list,
+                        "1",
+                        "1",
+                        MENU_ENUM_LABEL_GPU_MANAGED_MAX_FREQ,
+                        MENU_SETTINGS_GPU_MANAGED_SET_MAXFREQ,
+                        0, 0, NULL);
+
+                  break;
+               case GPUSCALING_MAX_PERFORMANCE:
+               case GPUSCALING_MIN_POWER:
+               case GPUSCALING_BALANCED:
                   /* No settings for these modes */
                   break;
             };

@@ -337,6 +337,12 @@ typedef struct settings
       unsigned cpu_max_freq;
 #endif
 
+#ifdef HAVE_LAKKA_SWITCH
+      unsigned gpu_scaling_mode;
+      unsigned gpu_min_freq;
+      unsigned gpu_max_freq;
+#endif
+
 #ifdef HAVE_MIST
       unsigned steam_rich_presence_format;
 #endif
@@ -456,6 +462,10 @@ typedef struct settings
       char timezone[TIMEZONE_LENGTH];
       char cpu_main_gov[32];
       char cpu_menu_gov[32];
+#endif
+#ifdef HAVE_LAKKA_SWITCH
+      char gpu_main_gov[32];
+      char gpu_menu_gov[32];
 #endif
    } arrays;
 

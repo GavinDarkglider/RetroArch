@@ -48,6 +48,9 @@
 #include "../../playlist.h"
 #include "../../manual_content_scan.h"
 #include "../misc/cpufreq/cpufreq.h"
+#ifdef HAVE_LAKKA_SWITCH
+#include "../misc/gpufreq/gpufreq.h"
+#endif
 #include "../../audio/audio_driver.h"
 
 #ifdef HAVE_NETWORKING
@@ -763,7 +766,170 @@ static void menu_action_cpu_governor_label(
    strlcpy(s, d->scaling_governor, len);
 }
 #endif
+#ifdef HAVE_LAKKA_SWITCH
+static void menu_action_setting_disp_gpu_gov_mode(
+      file_list_t* list,
+      unsigned *w, unsigned type, unsigned i,
+      const char *label,
+      char *s, size_t len,
+      const char *path,
+      char *s2, size_t len2)
+{
+   const char *alt        = list->list[i].alt
+         ? list->list[i].alt
+         : list->list[i].path;
+   enum gpu_scaling_mode mode = get_gpu_scaling_mode(NULL);
 
+   if (alt)
+      strlcpy(s2, alt, len2);
+
+   strlcpy(s, msg_hash_to_str(
+      MENU_ENUM_LABEL_VALUE_GPU_PERF_MODE_MANAGED_PERF + (int)mode), len);
+}
+
+static void menu_action_setting_disp_gpu_gov_choose(
+      file_list_t* list,
+      unsigned *w, unsigned type, unsigned i,
+      const char *label,
+      char *s, size_t len,
+      const char *path,
+      char *s2, size_t len2)
+{
+   gpu_scaling_opts_t opts;
+   const char *alt            = list->list[i].alt
+         ? list->list[i].alt
+         : list->list[i].path;
+   int fnum                   = atoi(list->list[i].label);
+   enum gpu_scaling_mode mode = get_gpu_scaling_mode(&opts);
+
+   if (alt)
+      strlcpy(s2, alt, len2);
+
+   if (!fnum)
+      strlcpy(s, opts.main_policy, len);
+   else
+      strlcpy(s, opts.menu_policy, len);
+}
+
+static void menu_action_setting_disp_set_label_gpu_policy(
+      file_list_t* list,
+      unsigned *w, unsigned type, unsigned i,
+      const char *label,
+      char *s, size_t len,
+      const char *path,
+      char *s2, size_t len2)
+{
+   unsigned policyid = atoi(path);
+   gpu_scaling_driver_t **drivers = get_gpu_scaling_drivers(false);
+   gpu_scaling_driver_t *d = drivers[policyid];
+
+   *s = '\0';
+   *w = 0;
+
+   if (d->affected_gpus)
+      snprintf(s2, len2, "%s %d [CPU(s) %s]", msg_hash_to_str(
+         MENU_ENUM_LABEL_VALUE_GPU_POLICY_ENTRY), policyid,
+         d->affected_gpus);
+   else
+      snprintf(s2, len2, "%s %d", msg_hash_to_str(
+         MENU_ENUM_LABEL_VALUE_GPU_POLICY_ENTRY), policyid);
+}
+
+static void menu_action_gpu_managed_freq_label(
+      file_list_t* list,
+      unsigned *w, unsigned type, unsigned i,
+      const char *label,
+      char *s, size_t len,
+      const char *path,
+      char *s2, size_t len2)
+{
+   gpu_scaling_opts_t opts;
+   uint32_t freq              = 0;
+   enum gpu_scaling_mode mode = get_gpu_scaling_mode(&opts);
+
+   switch (type)
+   {
+      case MENU_SETTINGS_GPU_MANAGED_SET_MINFREQ:
+         strlcpy(s2, msg_hash_to_str(
+                  MENU_ENUM_LABEL_VALUE_GPU_MANAGED_MIN_FREQ), len2);
+         freq = opts.min_freq;
+         break;
+      case MENU_SETTINGS_GPU_MANAGED_SET_MAXFREQ:
+         strlcpy(s2, msg_hash_to_str(
+                  MENU_ENUM_LABEL_VALUE_GPU_MANAGED_MAX_FREQ), len2);
+         freq = opts.max_freq;
+         break;
+   };
+
+   if (freq == 1)
+   {
+      s[0] = 'M';
+      s[1] = 'i';
+      s[2] = 'n';
+      s[3] = '.';
+      s[4] = '\0';
+   }
+   else if (freq == ~0U)
+   {
+      s[0] = 'M';
+      s[1] = 'a';
+      s[2] = 'x';
+      s[3] = '.';
+      s[4] = '\0';
+   }
+   else
+      snprintf(s, len, "%u MHz", freq / 1000);
+}
+
+static void menu_action_gpu_freq_label(
+      file_list_t* list,
+      unsigned *w, unsigned type, unsigned i,
+      const char *label,
+      char *s, size_t len,
+      const char *path,
+      char *s2, size_t len2)
+{
+   unsigned              policyid = atoi(path);
+   gpu_scaling_driver_t **drivers = get_gpu_scaling_drivers(false);
+   gpu_scaling_driver_t        *d = drivers[policyid];
+
+   switch (type)
+   {
+      case MENU_SETTINGS_GPU_POLICY_SET_MINFREQ:
+         strlcpy(s2, msg_hash_to_str(
+                  MENU_ENUM_LABEL_VALUE_GPU_POLICY_MIN_FREQ), len2);
+         snprintf(s, len, "%u MHz", d->min_policy_freq / 1000);
+         break;
+      case MENU_SETTINGS_GPU_POLICY_SET_MAXFREQ:
+         strlcpy(s2, msg_hash_to_str(
+                  MENU_ENUM_LABEL_VALUE_GPU_POLICY_MAX_FREQ), len2);
+         snprintf(s, len, "%u MHz", d->max_policy_freq / 1000);
+         break;
+      case MENU_SETTINGS_GPU_POLICY_SET_GOVERNOR:
+         strlcpy(s2, msg_hash_to_str(
+                  MENU_ENUM_LABEL_VALUE_GPU_POLICY_GOVERNOR), len2);
+         strlcpy(s, d->scaling_governor, len);
+         break;
+   };
+}
+
+static void menu_action_gpu_governor_label(
+      file_list_t* list,
+      unsigned *w, unsigned type, unsigned i,
+      const char *label,
+      char *s, size_t len,
+      const char *path,
+      char *s2, size_t len2)
+{
+   unsigned policyid = atoi(path);
+   gpu_scaling_driver_t **drivers = get_gpu_scaling_drivers(false);
+   gpu_scaling_driver_t *d = drivers[policyid];
+
+   strlcpy(s2, msg_hash_to_str(
+      MENU_ENUM_LABEL_VALUE_GPU_POLICY_GOVERNOR), len2);
+   strlcpy(s, d->scaling_governor, len);
+}
+#endif
 static void menu_action_setting_disp_set_label_core_lock(
       file_list_t* list,
       unsigned *w, unsigned type, unsigned i,
@@ -2062,6 +2228,32 @@ static int menu_cbs_init_bind_get_string_representation_compare_label(
             break;
          case MENU_ENUM_LABEL_CPU_POLICY_GOVERNOR:
             BIND_ACTION_GET_VALUE(cbs, menu_action_cpu_governor_label);
+            break;
+         #endif
+         #ifdef HAVE_LAKKA_SWITCH
+         case MENU_ENUM_LABEL_GPU_PERF_MODE:
+            BIND_ACTION_GET_VALUE(cbs,
+                  menu_action_setting_disp_gpu_gov_mode);
+            break;
+         case MENU_ENUM_LABEL_GPU_POLICY_CORE_GOVERNOR:
+         case MENU_ENUM_LABEL_GPU_POLICY_MENU_GOVERNOR:
+            BIND_ACTION_GET_VALUE(cbs,
+                  menu_action_setting_disp_gpu_gov_choose);
+            break;
+         case MENU_ENUM_LABEL_GPU_POLICY_ENTRY:
+            BIND_ACTION_GET_VALUE(cbs,
+                  menu_action_setting_disp_set_label_gpu_policy);
+            break;
+         case MENU_ENUM_LABEL_GPU_POLICY_MIN_FREQ:
+         case MENU_ENUM_LABEL_GPU_POLICY_MAX_FREQ:
+            BIND_ACTION_GET_VALUE(cbs, menu_action_gpu_freq_label);
+            break;
+         case MENU_ENUM_LABEL_GPU_MANAGED_MIN_FREQ:
+         case MENU_ENUM_LABEL_GPU_MANAGED_MAX_FREQ:
+            BIND_ACTION_GET_VALUE(cbs, menu_action_gpu_managed_freq_label);
+            break;
+         case MENU_ENUM_LABEL_GPU_POLICY_GOVERNOR:
+            BIND_ACTION_GET_VALUE(cbs, menu_action_gpu_governor_label);
             break;
          #endif
          default:

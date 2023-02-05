@@ -1173,6 +1173,16 @@ MSG_HASH(
    MENU_ENUM_LABEL_DEFERRED_CPU_POLICY_ENTRY,
    "deferred_cpu_policy_list"
    )
+#ifdef HAVE_LAKKA_SWITCH
+MSG_HASH(
+   MENU_ENUM_LABEL_DEFERRED_GPU_PERFPOWER_LIST,
+   "deferred_gpu_perfpower_list"
+   )
+MSG_HASH(
+   MENU_ENUM_LABEL_DEFERRED_GPU_POLICY_ENTRY,
+   "deferred_gpu_policy_list"
+   )
+#endif
 MSG_HASH(
    MENU_ENUM_LABEL_DEFERRED_LAKKA_LIST,
    "deferred_lakka_list"
@@ -5793,6 +5803,12 @@ MSG_HASH(
    MENU_ENUM_LABEL_CPU_PERFPOWER,
    "cpu_perfpower_list"
    )
+#ifdef HAVE_LAKKA_SWITCH
+MSG_HASH(
+   MENU_ENUM_LABEL_GPU_PERFPOWER,
+   "gpu_perfpower_list"
+   )
+#endif
 MSG_HASH(
    MENU_ENUM_LABEL_AI_SERVICE_SETTINGS,
    "ai_service_settings"
