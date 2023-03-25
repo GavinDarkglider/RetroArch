@@ -2079,6 +2079,7 @@ static struct config_bool_setting *populate_settings_bool(
 #ifdef HAVE_LAKKA_SWITCH
    SETTING_BOOL("switch_oc",       &settings->bools.switch_oc, true, DEFAULT_SWITCH_OC, false);
    SETTING_BOOL("switch_cec",       &settings->bools.switch_cec, true, DEFAULT_SWITCH_CEC, false);
+   SETTING_BOOL("bluetooth_ertm_disable",      &settings->bools.bluetooth_ertm_disable, true, DEFAULT_BLUETOOTH_ERTM, false);
 #endif
 #ifdef ANDROID
    SETTING_BOOL("android_input_disconnect_workaround",   &settings->bools.android_input_disconnect_workaround, true, false, false);
@@ -3908,6 +3909,15 @@ static bool config_load_file(global_t *global,
       fclose(f);
 	} else {
 	  filestream_delete(SWITCH_CEC_TOGGLE_PATH);	
+    }
+    if (settings->bools.bluetooth_ertm_disable == true) {
+      FILE* f = fopen(BLUETOOTH_ERTM_TOGGLE_PATH, "w");
+	  fprintf(f, "1\n");
+      fclose(f);
+	} else {
+      FILE* f = fopen(BLUETOOTH_ERTM_TOGGLE_PATH, "w");
+	  fprintf(f, "0\n");
+      fclose(f);
     }
 #endif    
    frontend_driver_set_sustained_performance_mode(settings->bools.sustained_performance_mode);
