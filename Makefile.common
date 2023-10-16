@@ -47,6 +47,15 @@ ifeq ($(HAVE_GL_CONTEXT),)
    endif
 endif
 
+ifeq ($(HAVE_DEBUG),)
+   DEFINES += -DDEBUG
+#   DEFINES += -DGL_DEBUG
+#   DEFINES += -DVULKAN_DEBUG
+#   DEFINES += -DMBEDTLS_SSL_DEBUG_ALL
+#   DEFINES += -DCDROM_DEBUG
+endif
+
+
 ifeq ($(HAVE_LIBRETRODB),)
    HAVE_LIBRETRODB = 1
 endif
