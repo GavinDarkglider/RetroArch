@@ -49,7 +49,9 @@
 #include "../../playlist.h"
 #include "../../manual_content_scan.h"
 #include "../misc/cpufreq/cpufreq.h"
-
+#ifdef HAVE_LAKKA_SWITCH
+#include "../misc/gpufreq/gpufreq.h"
+#endif
 #ifndef BIND_ACTION_RIGHT
 #define BIND_ACTION_RIGHT(cbs, name) (cbs)->action_right = (name)
 #endif
@@ -1075,6 +1077,81 @@ static int cpu_policy_freq_tweak(unsigned type, const char *label,
    return 0;
 }
 #endif
+#ifdef HAVE_LAKKA_SWITCH
+static int gpu_policy_mode_change(unsigned type, const char *label,
+      bool wraparound)
+{
+   struct menu_state *menu_st = menu_state_get_ptr();
+   gpu_scaling_opts_t opts;
+   enum gpu_scaling_mode mode = get_gpu_scaling_mode(&opts);
+   if (mode != GPUSCALING_MANUAL)
+      mode++;
+   set_gpu_scaling_mode(mode, &opts);
+   menu_st->flags |= MENU_ST_FLAG_ENTRIES_NEED_REFRESH;
+   return 0;
+}
+
+static int gpu_policy_freq_managed_tweak(unsigned type, const char *label,
+      bool wraparound)
+{
+   bool refresh = false;
+   gpu_scaling_opts_t opts;
+   gpu_scaling_driver_t **drivers = get_gpu_scaling_drivers(false);
+   unsigned policyid = atoi(label);
+   enum gpu_scaling_mode mode = get_gpu_scaling_mode(&opts);
+
+   if (!drivers)
+     return 0 ;
+
+   switch (type)
+   {
+      case MENU_SETTINGS_GPU_MANAGED_SET_MINFREQ:
+        if((*drivers)->available_freqs)
+            opts.min_freq = get_gpu_scaling_next_frequency(drivers[policyid], opts.min_freq, 1);
+        else
+          opts.min_freq = get_gpu_scaling_next_frequency_limit(opts.min_freq, 1);
+         set_gpu_scaling_mode(mode, &opts);
+         break;
+      case MENU_SETTINGS_GPU_MANAGED_SET_MAXFREQ:
+        if((*drivers)->available_freqs) {
+           opts.max_freq = get_gpu_scaling_next_frequency(drivers[policyid], opts.max_freq, 1);
+        }
+        else
+           opts.max_freq = get_gpu_scaling_next_frequency_limit(opts.max_freq, 1);
+         set_gpu_scaling_mode(mode, &opts);
+         break;
+   }
+
+   return 0;
+}
+
+static int gpu_policy_freq_tweak(unsigned type, const char *label,
+      bool wraparound)
+{
+   gpu_scaling_driver_t **drivers = get_gpu_scaling_drivers(false);
+
+   if (drivers)
+   {
+      uint32_t next_freq;
+      unsigned policyid           = atoi(label);
+      switch (type)
+      {
+         case MENU_SETTINGS_GPU_POLICY_SET_MINFREQ:
+            next_freq = get_gpu_scaling_next_frequency(drivers[policyid],
+                  drivers[policyid]->min_policy_freq, 1);
+            set_gpu_scaling_min_frequency(drivers[policyid], next_freq);
+            break;
+         case MENU_SETTINGS_GPU_POLICY_SET_MAXFREQ:
+            next_freq = get_gpu_scaling_next_frequency(drivers[policyid],
+                  drivers[policyid]->max_policy_freq, 1);
+            set_gpu_scaling_max_frequency(drivers[policyid], next_freq);
+            break;
+      }
+   }
+
+   return 0;
+}
+#endif
 
 static int core_setting_right(unsigned type, const char *label,
       bool wraparound)
@@ -1416,6 +1493,17 @@ static int menu_cbs_init_bind_right_compare_label(menu_file_list_cbs_t *cbs,
             case MENU_ENUM_LABEL_CPU_POLICY_CORE_GOVERNOR:
             case MENU_ENUM_LABEL_CPU_POLICY_MENU_GOVERNOR:
                BIND_ACTION_RIGHT(cbs, cpu_policy_freq_managed_gov);
+               break;
+            #endif
+            #ifdef HAVE_LAKKA_SWITCH
+            case MENU_ENUM_LABEL_GPU_PERF_MODE:
+               BIND_ACTION_RIGHT(cbs, gpu_policy_mode_change);
+               break;
+            case MENU_ENUM_LABEL_GPU_POLICY_MAX_FREQ:
+            case MENU_ENUM_LABEL_GPU_POLICY_MIN_FREQ:
+            case MENU_ENUM_LABEL_GPU_MANAGED_MIN_FREQ:
+            case MENU_ENUM_LABEL_GPU_MANAGED_MAX_FREQ:
+               BIND_ACTION_RIGHT(cbs, gpu_policy_freq_managed_tweak);
                break;
             #endif
             default:
