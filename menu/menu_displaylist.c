@@ -13095,7 +13095,7 @@ bool menu_displaylist_ctl(enum menu_displaylist_ctl_state type,
 
                   menu_entries_append(info->list,
                         msg_hash_to_str(MENU_ENUM_LABEL_VALUE_CPU_PERF_MODE),
-                        MENU_ENUM_LABEL_CPU_PERF_MODE_STR,
+                        msg_hash_to_str(MENU_ENUM_LABEL_CPU_PERF_MODE),
                         MENU_ENUM_LABEL_CPU_PERF_MODE,
                         0, 0, 0, NULL);
 
