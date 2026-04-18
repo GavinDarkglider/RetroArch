@@ -16292,20 +16292,8 @@ MSG_HASH(
    "GPU Performance and Power"
    )
 MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_GPU_POLICY_ENTRY,
-   "Policy"
-   )
-MSG_HASH(
    MENU_ENUM_LABEL_VALUE_GPU_PERF_MODE,
    "Governing Mode"
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_GPU_PERF_MODE_MANUAL,
-   "Manual"
-   )
-MSG_HASH(
-   MENU_ENUM_SUBLABEL_VALUE_GPU_PERF_MODE_MANUAL,
-   "Allows to manually tweak every detail in every GPU: governor, frequencies, etc. Only recommended for advanced users."
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_GPU_PERF_MODE_MANAGED_PERF,
@@ -16314,10 +16302,6 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_SUBLABEL_VALUE_GPU_PERF_MODE_MANAGED_PERF,
    "Default and recommended mode. Maximum performance while playing, while saving power when paused or browsing menus."
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_GPU_PERF_MODE_MANAGED_PER_CONTEXT,
-   "Custom Managed"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_GPU_PERF_MODE_MAX_PERF,
@@ -16342,14 +16326,6 @@ MSG_HASH(
 MSG_HASH(
    MENU_ENUM_SUBLABEL_VALUE_GPU_PERF_MODE_BALANCED,
    "Adapts to the current workload. Works well with most devices and emulators and helps to save power. Demanding games and cores might suffer a performance drop on some devices."
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_GPU_POLICY_MIN_FREQ,
-   "Minimum Frequency"
-   )
-MSG_HASH(
-   MENU_ENUM_LABEL_VALUE_GPU_POLICY_MAX_FREQ,
-   "Maximum Frequency"
    )
 MSG_HASH(
    MENU_ENUM_LABEL_VALUE_GPU_MANAGED_MIN_FREQ,

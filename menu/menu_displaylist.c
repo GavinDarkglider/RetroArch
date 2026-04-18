@@ -13172,24 +13172,6 @@ bool menu_displaylist_ctl(enum menu_displaylist_ctl_state type,
             }
 #endif
 #ifdef HAVE_LAKKA_SWITCH
-      case DISPLAYLIST_GPU_POLICY_LIST:
-         menu_entries_clear(info->list);
-         menu_entries_append(info->list,
-            info->path,
-            info->path,
-            MENU_ENUM_LABEL_GPU_POLICY_MIN_FREQ,
-            MENU_SETTINGS_GPU_POLICY_SET_MINFREQ, 0, 0, NULL);
-
-         menu_entries_append(info->list,
-            info->path,
-            info->path,
-            MENU_ENUM_LABEL_GPU_POLICY_MAX_FREQ,
-            MENU_SETTINGS_GPU_POLICY_SET_MAXFREQ, 0, 0, NULL);
-
-         info->flags       |= MD_FLAG_NEED_REFRESH
-                            | MD_FLAG_NEED_PUSH
-                            | MD_FLAG_NEED_CLEAR;
-         break;
       case DISPLAYLIST_GPU_PERFPOWER_LIST:
       {
          gpu_scaling_driver_t **drivers = get_gpu_scaling_drivers(true);
@@ -13206,21 +13188,6 @@ bool menu_displaylist_ctl(enum menu_displaylist_ctl_state type,
 
             switch (get_gpu_scaling_mode(NULL))
             {
-               case GPUSCALING_MANUAL:
-                  while (*drivers)
-                  {
-                     char policyid[16];
-                     snprintf(policyid, sizeof(policyid), "%u", count++);
-                     menu_entries_append(info->list,
-                           policyid,
-                           policyid,
-                           MENU_ENUM_LABEL_GPU_POLICY_ENTRY,
-                           0, 0, 0, NULL);
-                     drivers++;
-                  }
-                  break;
-               case GPUSCALING_MANAGED_PER_CONTEXT:
-                  /* fallthrough - only frequenc6 entries shown */
                case GPUSCALING_MANAGED_PERFORMANCE:
                   /* Allow users to choose max/min frequencies */
                   menu_entries_append(info->list,

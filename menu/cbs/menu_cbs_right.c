@@ -1084,7 +1084,7 @@ static int gpu_policy_mode_change(unsigned type, const char *label,
    struct menu_state *menu_st = menu_state_get_ptr();
    gpu_scaling_opts_t opts;
    enum gpu_scaling_mode mode = get_gpu_scaling_mode(&opts);
-   if (mode != GPUSCALING_MANUAL)
+   if (mode != GPUSCALING_BALANCED)
       mode++;
    set_gpu_scaling_mode(mode, &opts);
    menu_st->flags |= MENU_ST_FLAG_ENTRIES_NEED_REFRESH;
@@ -1120,33 +1120,6 @@ static int gpu_policy_freq_managed_tweak(unsigned type, const char *label,
            opts.max_freq = get_gpu_scaling_next_frequency_limit(opts.max_freq, 1);
          set_gpu_scaling_mode(mode, &opts);
          break;
-   }
-
-   return 0;
-}
-
-static int gpu_policy_freq_tweak(unsigned type, const char *label,
-      bool wraparound)
-{
-   gpu_scaling_driver_t **drivers = get_gpu_scaling_drivers(false);
-
-   if (drivers)
-   {
-      uint32_t next_freq;
-      unsigned policyid           = atoi(label);
-      switch (type)
-      {
-         case MENU_SETTINGS_GPU_POLICY_SET_MINFREQ:
-            next_freq = get_gpu_scaling_next_frequency(drivers[policyid],
-                  drivers[policyid]->min_policy_freq, 1);
-            set_gpu_scaling_min_frequency(drivers[policyid], next_freq);
-            break;
-         case MENU_SETTINGS_GPU_POLICY_SET_MAXFREQ:
-            next_freq = get_gpu_scaling_next_frequency(drivers[policyid],
-                  drivers[policyid]->max_policy_freq, 1);
-            set_gpu_scaling_max_frequency(drivers[policyid], next_freq);
-            break;
-      }
    }
 
    return 0;
@@ -1499,8 +1472,6 @@ static int menu_cbs_init_bind_right_compare_label(menu_file_list_cbs_t *cbs,
             case MENU_ENUM_LABEL_GPU_PERF_MODE:
                BIND_ACTION_RIGHT(cbs, gpu_policy_mode_change);
                break;
-            case MENU_ENUM_LABEL_GPU_POLICY_MAX_FREQ:
-            case MENU_ENUM_LABEL_GPU_POLICY_MIN_FREQ:
             case MENU_ENUM_LABEL_GPU_MANAGED_MIN_FREQ:
             case MENU_ENUM_LABEL_GPU_MANAGED_MAX_FREQ:
                BIND_ACTION_RIGHT(cbs, gpu_policy_freq_managed_tweak);

@@ -1566,23 +1566,6 @@ static int action_bind_sublabel_cpu_perf_mode(
 }
 #endif
 #ifdef HAVE_LAKKA_SWITCH
-static int action_bind_sublabel_gpu_policy_entry_list(
-      file_list_t *list,
-      unsigned type, unsigned i,
-      const char *label, const char *path,
-      char *s, size_t len)
-{
-   /* Displays info about the Policy entry */
-   gpu_scaling_driver_t **drivers = get_gpu_scaling_drivers(false);
-   int idx = atoi(path);
-   if (drivers)
-   {
-      snprintf(s, len, "Freq: %u MHz\n", drivers[idx]->current_frequency / 1000000);
-      return 0;
-   }
-
-   return -1;
-}
 static int action_bind_sublabel_gpu_perf_mode(
       file_list_t *list,
       unsigned type, unsigned i,
@@ -5525,9 +5508,6 @@ int menu_cbs_init_bind_sublabel(menu_file_list_cbs_t *cbs,
             break;
          case MENU_ENUM_LABEL_BLUETOOTH_ERTM_DISABLE:
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_bluetooth_ertm_disable);
-            break;
-         case MENU_ENUM_LABEL_GPU_POLICY_ENTRY:
-            BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_gpu_policy_entry_list);
             break;
          case MENU_ENUM_LABEL_GPU_PERF_MODE:
             BIND_ACTION_SUBLABEL(cbs, action_bind_sublabel_gpu_perf_mode);

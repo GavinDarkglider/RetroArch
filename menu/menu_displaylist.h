@@ -302,7 +302,6 @@ enum menu_displaylist_ctl_state
 #endif
 #ifdef HAVE_LAKKA_SWITCH
    DISPLAYLIST_GPU_PERFPOWER_LIST,
-   DISPLAYLIST_GPU_POLICY_LIST,
 #endif
 #ifdef HAVE_GAME_AI
    DISPLAYLIST_OPTIONS_GAME_AI,

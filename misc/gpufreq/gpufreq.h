@@ -34,11 +34,9 @@ enum gpu_scaling_event
 enum gpu_scaling_mode
 {
    GPUSCALING_MANAGED_PERFORMANCE = 0, /* Performance while running core     */
-   GPUSCALING_MANAGED_PER_CONTEXT,     /* Policies for core, menu, etc.      */
    GPUSCALING_MAX_PERFORMANCE,         /* Performance (Max Freq)             */
    GPUSCALING_MIN_POWER,               /* Use Powersave governor             */
    GPUSCALING_BALANCED,                /* Uses schedutil/ondemand            */
-   GPUSCALING_MANUAL                   /* Can manually tweak stuff           */
 };
 
 typedef struct gpu_scaling_opts

@@ -655,7 +655,6 @@ DEFAULT_TITLE_MACRO(action_get_cpu_perfpower_settings_list,     MENU_ENUM_LABEL_
 DEFAULT_TITLE_MACRO(action_get_cpu_policy_entry_list,           MENU_ENUM_LABEL_VALUE_CPU_POLICY_ENTRY)
 #ifdef HAVE_LAKKA_SWITCH
 DEFAULT_TITLE_MACRO(action_get_gpu_perfpower_settings_list,     MENU_ENUM_LABEL_VALUE_GPU_PERFPOWER)
-DEFAULT_TITLE_MACRO(action_get_gpu_policy_entry_list,           MENU_ENUM_LABEL_VALUE_GPU_POLICY_ENTRY)
 #endif
 DEFAULT_TITLE_MACRO(action_get_menu_sounds_list,                MENU_ENUM_LABEL_VALUE_MENU_SOUNDS)
 DEFAULT_TITLE_MACRO(action_get_menu_file_browser_settings_list, MENU_ENUM_LABEL_VALUE_MENU_FILE_BROWSER_SETTINGS)
@@ -1020,7 +1019,6 @@ static int menu_cbs_init_bind_title_compare_label(menu_file_list_cbs_t *cbs,
       {MENU_ENUM_LABEL_DEFERRED_CPU_POLICY_ENTRY,                     action_get_cpu_policy_entry_list},
 #ifdef HAVE_LAKKA_SWITCH
       {MENU_ENUM_LABEL_DEFERRED_GPU_PERFPOWER_LIST,                   action_get_gpu_perfpower_settings_list},
-      {MENU_ENUM_LABEL_DEFERRED_GPU_POLICY_ENTRY,                     action_get_gpu_policy_entry_list},
 #endif
       {MENU_ENUM_LABEL_DEFERRED_MENU_SOUNDS_LIST,                     action_get_menu_sounds_list},
       {MENU_ENUM_LABEL_DEFERRED_MENU_FILE_BROWSER_SETTINGS_LIST,      action_get_menu_file_browser_settings_list},

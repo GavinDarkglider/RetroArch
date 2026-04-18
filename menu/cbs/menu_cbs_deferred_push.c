@@ -271,7 +271,6 @@ GENERIC_DEFERRED_PUSH(deferred_push_cpu_policy,                     DISPLAYLIST_
 
 #ifdef HAVE_LAKKA_SWITCH
 GENERIC_DEFERRED_PUSH(deferred_push_gpu_perfpower,                  DISPLAYLIST_GPU_PERFPOWER_LIST)
-GENERIC_DEFERRED_PUSH(deferred_push_gpu_policy,                     DISPLAYLIST_GPU_POLICY_LIST)
 #endif
 
 GENERIC_DEFERRED_PUSH(deferred_push_manual_content_scan_list,       DISPLAYLIST_MANUAL_CONTENT_SCAN_LIST)
@@ -671,7 +670,6 @@ static int menu_cbs_init_bind_deferred_push_compare_label(
 #endif
 #ifdef HAVE_LAKKA_SWITCH
       {MENU_ENUM_LABEL_DEFERRED_GPU_PERFPOWER_LIST, deferred_push_gpu_perfpower},
-      {MENU_ENUM_LABEL_DEFERRED_GPU_POLICY_ENTRY, deferred_push_gpu_policy},
 #endif
       {MENU_ENUM_LABEL_DEFERRED_REMAPPINGS_PORT_LIST, deferred_push_remappings_port},
       {MENU_ENUM_LABEL_DEFERRED_ACCOUNTS_LIST, deferred_push_accounts_list},

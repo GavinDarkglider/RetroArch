@@ -348,16 +348,6 @@ void set_gpu_scaling_signal(enum gpu_scaling_event event)
       else
          steer_all_drivers(abs_min_freq, abs_min_freq);
       break;
-   case GPUSCALING_MANAGED_PER_CONTEXT:
-      /* Change clocks based upon retroarch state, minimum for menu, user defined for core */
-      /*Delete ME: I am an un-needed mode without governors to change.*/
-      if (event == GPUSCALING_EVENT_FOCUS_CORE)
-         steer_all_drivers(cur_smode_opts.min_freq,
-            cur_smode_opts.max_freq);
-      else
-         steer_all_drivers(abs_min_freq,
-            abs_min_freq);
-      break;
    default:
       break;
    };
@@ -383,11 +373,7 @@ void set_gpu_scaling_mode(
 
    switch (mode)
    {
-   case GPUSCALING_MANUAL:
-      /* Do nothing, the UI allows for tweaking directly */
-      break;
    case GPUSCALING_MANAGED_PERFORMANCE:
-   case GPUSCALING_MANAGED_PER_CONTEXT:
       /* Simulate a state change to enforce the policy */
       set_gpu_scaling_signal(GPUSCALING_EVENT_FOCUS_MENU);
       break;
@@ -436,7 +422,7 @@ void gpu_scaling_driver_init(void)
    cur_smode_opts.min_freq = settings->uints.gpu_min_freq;
    cur_smode_opts.max_freq = settings->uints.gpu_max_freq;
 
-   if (mode <= (unsigned)GPUSCALING_MANUAL)
+   if (mode <= (unsigned)GPUSCALING_BALANCED)
       cur_smode = (enum gpu_scaling_mode)mode;
 
    /* Force update the policy tree */

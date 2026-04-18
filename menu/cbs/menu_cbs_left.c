@@ -980,32 +980,6 @@ static int gpu_policy_freq_managed_tweak(unsigned type, const char *label,
 
    return 0;
 }
-
-static int gpu_policy_freq_tweak(unsigned type, const char *label,
-      bool wraparound)
-{
-   bool refresh = false;
-   gpu_scaling_driver_t **drivers = get_gpu_scaling_drivers(false);
-   unsigned policyid = atoi(label);
-   uint32_t next_freq;
-   if (!drivers)
-     return 0;
-
-   switch (type) {
-   case MENU_SETTINGS_GPU_POLICY_SET_MINFREQ:
-      next_freq = get_gpu_scaling_next_frequency(drivers[policyid],
-         drivers[policyid]->min_policy_freq, -1);
-      set_gpu_scaling_min_frequency(drivers[policyid], next_freq);
-      break;
-   case MENU_SETTINGS_GPU_POLICY_SET_MAXFREQ:
-      next_freq = get_gpu_scaling_next_frequency(drivers[policyid],
-         drivers[policyid]->max_policy_freq, -1);
-      set_gpu_scaling_max_frequency(drivers[policyid], next_freq);
-      break;
-   };
-
-   return 0;
-}
 #endif
 static int core_setting_left(unsigned type, const char *label,
       bool wraparound)
@@ -1332,8 +1306,6 @@ static int menu_cbs_init_bind_left_compare_label(menu_file_list_cbs_t *cbs,
             case MENU_ENUM_LABEL_GPU_PERF_MODE:
                BIND_ACTION_LEFT(cbs, gpu_policy_mode_change);
                break;
-            case MENU_ENUM_LABEL_GPU_POLICY_MAX_FREQ:
-            case MENU_ENUM_LABEL_GPU_POLICY_MIN_FREQ:
             case MENU_ENUM_LABEL_GPU_MANAGED_MIN_FREQ:
             case MENU_ENUM_LABEL_GPU_MANAGED_MAX_FREQ:
                BIND_ACTION_LEFT(cbs, gpu_policy_freq_managed_tweak);
