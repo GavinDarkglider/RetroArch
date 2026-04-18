@@ -1090,6 +1090,7 @@
 #define MENU_ENUM_LABEL_VIDEO_AUTOSWITCH_REFRESH_RATE_STR "video_autoswitch_refresh_rate"
 #define MENU_ENUM_LABEL_VIDEO_AUTOSWITCH_PAL_THRESHOLD_STR "video_autoswitch_pal_threshold"
 #define MENU_ENUM_LABEL_VIDEO_ROTATION_STR "video_rotation"
+#define MENU_ENUM_LABEL_VIDEO_MENU_ROTATION_LOCK_STR "video_menu_rotation_lock"
 #define MENU_ENUM_LABEL_SCREEN_ORIENTATION_STR "screen_orientation"
 #define MENU_ENUM_LABEL_VIDEO_SCALE_STR "video_scale"
 #define MENU_ENUM_LABEL_VIDEO_SCALE_INTEGER_STR "video_scale_integer"

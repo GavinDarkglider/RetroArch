@@ -894,7 +894,8 @@ typedef struct
    unsigned height;
    unsigned scale_width;
    unsigned scale_height;
-
+   unsigned current_rotation;
+   unsigned system_rotation;
    float core_hz;
    float aspect_ratio;
    float video_refresh_rate_original;

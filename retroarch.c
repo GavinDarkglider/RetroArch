@@ -1801,6 +1801,11 @@ void drivers_init(
    cpu_scaling_driver_init();
 #endif
 
+   if (settings && settings->uints.video_menu_rotation_lock)
+      video_driver_set_rotation(settings->uints.video_rotation);
+   else
+      video_driver_set_rotation(0);
+
 #ifdef HAVE_MENU
    srand(time(NULL));
 #endif

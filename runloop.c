@@ -1862,10 +1862,15 @@ bool runloop_environment_cb(unsigned cmd, void *data)
       case RETRO_ENVIRONMENT_SET_ROTATION:
       {
          unsigned rotation       = *(const unsigned*)data;
+         video_driver_state_t *video_st = video_state_get_ptr();
          unsigned rotation_v[4]  = {0, 90, 180, 270};
          bool video_allow_rotate = settings->bools.video_allow_rotate;
 
          RARCH_LOG("[Environ] SET_ROTATION: \"%u\" (%u deg).\n", rotation, rotation_v[rotation % 4]);
+
+         video_st->system_rotation = rotation;
+
+         video_st->current_rotation = (settings->uints.video_rotation + rotation) % 4;
 
          if (sys_info)
             sys_info->core_requested_rotation = rotation;

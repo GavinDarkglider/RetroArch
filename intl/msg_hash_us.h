@@ -2069,6 +2069,14 @@ MSG_HASH(
    "Video Rotation"
    )
 MSG_HASH(
+   MENU_ENUM_LABEL_VALUE_VIDEO_MENU_ROTATION_LOCK,
+   "Apply Rotation to Menu"
+   )
+MSG_HASH(
+   MENU_ENUM_SUBLABEL_VIDEO_MENU_ROTATION_LOCK,
+   "When enabled, the rotation set in 'Rotation' is also applied to the RetroArch menu. Useful for vertically-oriented displays (e.g. arcade cabinets). When disabled (default), the menu is always shown unrotated regardless of the Rotation setting."
+   )
+MSG_HASH(
    MENU_ENUM_SUBLABEL_VIDEO_ROTATION,
    "Forces a certain rotation of the video. The rotation is added to rotations which the core sets."
    )

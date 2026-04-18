@@ -2584,6 +2584,7 @@ static struct config_uint_setting *populate_settings_uint(
    SETTING_UINT("video_shader_subframes",        &settings->uints.video_shader_subframes, true, DEFAULT_SHADER_SUBFRAMES, false);
    SETTING_UINT("video_swap_interval",           &settings->uints.video_swap_interval, true, DEFAULT_SWAP_INTERVAL, false);
    SETTING_UINT("video_rotation",                &settings->uints.video_rotation, true, ORIENTATION_NORMAL, false);
+   SETTING_UINT("video_menu_rotation_lock",      &settings->uints.video_menu_rotation_lock, true, 0, false);
    SETTING_UINT("screen_orientation",            &settings->uints.screen_orientation, true, ORIENTATION_NORMAL, false);
    SETTING_UINT("video_msg_bgcolor_red",         &settings->uints.video_msg_bgcolor_red, true, DEFAULT_MESSAGE_BGCOLOR_RED, false);
    SETTING_UINT("video_msg_bgcolor_green",       &settings->uints.video_msg_bgcolor_green, true, DEFAULT_MESSAGE_BGCOLOR_GREEN, false);

@@ -6362,6 +6362,17 @@ void menu_driver_toggle(
    bool video_vsync                   = false;
    bool video_frame_delay_auto        = false;
 
+   video_driver_state_t *video_st     = video_state_get_ptr();
+   settings_t           *settings_ptr = config_get_ptr();
+
+   bool                  lock_rotation = settings_ptr
+          && settings_ptr->uints.video_menu_rotation_lock;
+
+   unsigned              content_rotation = settings_ptr
+         ? (settings_ptr->uints.video_rotation
+               + video_st->system_rotation) % 4
+         : 0;
+
    if (settings)
    {
 #ifdef HAVE_NETWORKING
@@ -6402,6 +6413,7 @@ void menu_driver_toggle(
          }
       }
 #endif
+      video_driver_set_rotation(lock_rotation ? content_rotation : 0);
    }
    else
    {
@@ -6414,6 +6426,7 @@ void menu_driver_toggle(
       menu_input->select_inhibit      = false;
       menu_input->cancel_inhibit      = false;
 #endif
+      video_driver_set_rotation(video_st->current_rotation);
    }
 
    if (menu_driver_alive)

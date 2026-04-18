@@ -14107,6 +14107,17 @@ static bool setting_append_list(
             (*list)[list_info->index - 1].get_string_representation =
                &setting_get_string_representation_uint_video_rotation;
 
+
+            CONFIG_UINT(
+                  list, list_info,
+                  &settings->uints.video_menu_rotation_lock,
+                  MENU_ENUM_LABEL_VIDEO_MENU_ROTATION_LOCK,
+                  MENU_ENUM_LABEL_VALUE_VIDEO_MENU_ROTATION_LOCK,
+                  0,
+                  &group_info, &subgroup_info, parent_group,
+                  general_write_handler, general_read_handler);
+            menu_settings_list_current_add_range(list, list_info, 0, 1, 1, true, true);
+
             CONFIG_UINT(
                   list, list_info,
                   &settings->uints.screen_orientation,
